@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<link rel="stylesheet" href="note.css">
+<style>
+   body{
+
+background: url(https://images.unsplash.com/photo-1495195129352-aeb325a55b65?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1176&q=80);
+}
+
+
+
+
+
+button{
+width: 60px;
+height: 40px;
+background-color: rgb(50, 218, 50);
+margin: 5px;
+border-radius: 5px;
+}
+.boss{
+border: 5px; border: 2px solid #ccc;
+margin: 5px;
+background-color: rgba(255, 255, 255, 0.648);
+
+
+
+}
+.remove{
+background-color: #e74c3c;
+}
+</style>
+<body>
+  <center>
+    <textarea name="newnote" id="note" cols="50"  placeholder="Write your note here please!"></textarea>
+    <button id="Addnote" onclick="newfile()">Add</button>
+  </center>
+  <div id="Addhere"></div>
+
+  <script>
+    let note = document.getElementById('note');
+    let Add = document.getElementById("Addnote");
+    let make = document.getElementById("Addhere");
+
+    // Load existing notes from local storage when the page loads
+    document.addEventListener("DOMContentLoaded", loadNotesFromLocalStorage);
+
+    function newfile() {
+      if (note.value === '') {
+        alert("Please provide me a input");
+      } else {
+        let myfile = document.createElement('div');
+        myfile.textContent = document.getElementById('note').value;
+        myfile.className = 'boss';
+        let remove = document.createElement('button');
+        remove.textContent = 'Delete';
+        remove.className = 'remove';
+        remove.addEventListener('click', dell);
+        make.appendChild(myfile);
+        myfile.appendChild(remove);
+        note.value = '';
+
+        // Save the note to local storage
+        saveNoteToLocalStorage(myfile.textContent);
+      }
+    }
+
+    function dell(event) {
+      let newremove = event.target.parentNode;
+      newremove.remove();
+
+      // Remove the note from local storage
+      removeNoteFromLocalStorage(newremove.textContent);
+    }
+
+    function saveNoteToLocalStorage(noteText) {
+      let notes = getNotesFromLocalStorage();
+      notes.push(noteText);
+      localStorage.setItem('notes', JSON.stringify(notes));
+    }
+
+    function removeNoteFromLocalStorage(noteText) {
+      let notes = getNotesFromLocalStorage();
+      notes = notes.filter(note => note !== noteText);
+      localStorage.setItem('notes', JSON.stringify(notes));
+    }
+
+    function getNotesFromLocalStorage() {
+      let notes = localStorage.getItem('notes');
+      return notes ? JSON.parse(notes) : [];
+    }
+
+    function loadNotesFromLocalStorage() {
+      let notes = getNotesFromLocalStorage();
+      for (let i = 0; i < notes.length; i++) {
+        let myfile = document.createElement('div');
+        myfile.textContent = notes[i];
+        myfile.className = 'boss';
+        let remove = document.createElement('button');
+        remove.textContent = 'Delete';
+        remove.className = 'remove';
+        remove.addEventListener('click', dell);
+        make.appendChild(myfile);
+        myfile.appendChild(remove);
+      }
+    }
+  </script>
+</body>
+</html>
